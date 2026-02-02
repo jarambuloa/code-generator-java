@@ -1,0 +1,3 @@
+rm -rf jte-classes
+Remove-Item -Recurse -Force jte-classes
+./gradlew clean run
