@@ -1,5 +1,6 @@
 package com.jarambuloa.codegeneratorjava.generator;
 
+import com.jarambuloa.codegeneratorjava.model.EntityDefinition;
 import com.jarambuloa.codegeneratorjava.model.ProjectDefinition;
 import com.jarambuloa.codegeneratorjava.template.TemplateRenderer;
 import com.jarambuloa.codegeneratorjava.writer.FileWriterService;
@@ -16,27 +17,29 @@ public class AdapterInGenerator {
     this.renderer = renderer;
   }
   
-  public void generate(ProjectDefinition project, Path outputDir) throws IOException {
+  public void generate(
+      ProjectDefinition project,
+      String entityName,
+      EntityDefinition entity,
+      Path outputDir
+  ) throws IOException {
     
     var model = Map.of(
         "basePackage", project.getBasePackage(),
-        "entity", project.getEntity()
+        "entityName", entityName,
+        "entity", entity
     );
     
     String basePath = project.getBasePackage().replace(".", "/")
         + "/adapters/in/rest/";
     
-    // DTO
     FileWriterService.write(
-        outputDir.resolve(basePath + "dto/Create"
-            + project.getEntity().getName() + "Request.java"),
+        outputDir.resolve(basePath + "dto/Create" + entityName + "Request.java"),
         renderer.render("adapterin/CreateRequest.jte", model)
     );
     
-    // Controller
     FileWriterService.write(
-        outputDir.resolve(basePath
-            + project.getEntity().getName() + "Controller.java"),
+        outputDir.resolve(basePath + entityName + "Controller.java"),
         renderer.render("adapterin/Controller.jte", model)
     );
   }

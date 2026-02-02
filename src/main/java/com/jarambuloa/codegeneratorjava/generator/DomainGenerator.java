@@ -1,5 +1,6 @@
 package com.jarambuloa.codegeneratorjava.generator;
 
+import com.jarambuloa.codegeneratorjava.model.EntityDefinition;
 import com.jarambuloa.codegeneratorjava.model.ProjectDefinition;
 import com.jarambuloa.codegeneratorjava.template.TemplateRenderer;
 import com.jarambuloa.codegeneratorjava.writer.FileWriterService;
@@ -16,27 +17,29 @@ public class DomainGenerator {
     this.renderer = renderer;
   }
   
-  public void generate(ProjectDefinition project, Path outputDir)
-      throws IOException {
+  public void generate(
+      ProjectDefinition project,
+      String entityName,
+      EntityDefinition entity,
+      Path outputDir
+  ) throws IOException {
     
-    Map<String, Object> model = Map.of(
+    var model = Map.of(
         "basePackage", project.getBasePackage(),
-        "entity", project.getEntity()
-    );
-    
-    String content = renderer.render(
-        "domain/Entity.jte",
-        model
+        "entityName", entityName,
+        "entity", entity
     );
     
     Path file = outputDir.resolve(
         project.getBasePackage().replace(".", "/")
             + "/domain/model/"
-            + project.getEntity().getName()
+            + entityName
             + ".java"
     );
     
-    FileWriterService.write(file, content);
+    FileWriterService.write(
+        file,
+        renderer.render("domain/Entity.jte", model)
+    );
   }
 }
-

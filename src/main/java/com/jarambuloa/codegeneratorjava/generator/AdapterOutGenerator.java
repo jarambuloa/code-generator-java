@@ -1,5 +1,6 @@
 package com.jarambuloa.codegeneratorjava.generator;
 
+import com.jarambuloa.codegeneratorjava.model.EntityDefinition;
 import com.jarambuloa.codegeneratorjava.model.ProjectDefinition;
 import com.jarambuloa.codegeneratorjava.template.TemplateRenderer;
 import com.jarambuloa.codegeneratorjava.writer.FileWriterService;
@@ -16,31 +17,34 @@ public class AdapterOutGenerator {
     this.renderer = renderer;
   }
   
-  public void generate(ProjectDefinition project, Path outputDir) throws IOException {
+  public void generate(
+      ProjectDefinition project,
+      String entityName,
+      EntityDefinition entity,
+      Path outputDir
+  ) throws IOException {
     
     var model = Map.of(
         "basePackage", project.getBasePackage(),
-        "entity", project.getEntity()
+        "entityName", entityName,
+        "entity", entity
     );
     
     String basePath = project.getBasePackage().replace(".", "/")
         + "/adapters/out/persistence/jpa/";
     
-    // JPA Entity
     FileWriterService.write(
-        outputDir.resolve(basePath + "entity/" + project.getEntity().getName() + "JpaEntity.java"),
+        outputDir.resolve(basePath + "entity/" + entityName + "JpaEntity.java"),
         renderer.render("adapterout/JpaEntity.jte", model)
     );
     
-    // JPA Repository
     FileWriterService.write(
-        outputDir.resolve(basePath + "repository/" + project.getEntity().getName() + "JpaRepository.java"),
+        outputDir.resolve(basePath + "repository/" + entityName + "JpaRepository.java"),
         renderer.render("adapterout/JpaRepository.jte", model)
     );
     
-    // Adapter
     FileWriterService.write(
-        outputDir.resolve(basePath + project.getEntity().getName() + "JpaAdapter.java"),
+        outputDir.resolve(basePath + entityName + "JpaAdapter.java"),
         renderer.render("adapterout/JpaAdapter.jte", model)
     );
   }

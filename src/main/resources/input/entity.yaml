@@ -1,11 +1,12 @@
 basePackage: com.empresa.usuarios
+serviceName: usuarios-service
 
-entity:
-  name: Usuario
-  table: usuarios
-  idType: Long
-  fields:
-    - name: username
-      type: String
-    - name: email
-      type: String
+entities:
+  Usuario:
+    table: usuarios
+    idType: Long
+    fields:
+      - name: username
+        type: String
+      - name: email
+        type: String

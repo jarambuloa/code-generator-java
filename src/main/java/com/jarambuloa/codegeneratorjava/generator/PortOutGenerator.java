@@ -1,5 +1,6 @@
 package com.jarambuloa.codegeneratorjava.generator;
 
+import com.jarambuloa.codegeneratorjava.model.EntityDefinition;
 import com.jarambuloa.codegeneratorjava.model.ProjectDefinition;
 import com.jarambuloa.codegeneratorjava.template.TemplateRenderer;
 import com.jarambuloa.codegeneratorjava.writer.FileWriterService;
@@ -16,26 +17,29 @@ public class PortOutGenerator {
     this.renderer = renderer;
   }
   
-  public void generate(ProjectDefinition project, Path outputDir)
-      throws IOException {
+  public void generate(
+      ProjectDefinition project,
+      String entityName,
+      EntityDefinition entity,
+      Path outputDir
+  ) throws IOException {
     
     var model = Map.of(
         "basePackage", project.getBasePackage(),
-        "entity", project.getEntity()
-    );
-    
-    String content = renderer.render(
-        "portout/RepositoryPort.jte",
-        model
+        "entityName", entityName,
+        "entity", entity
     );
     
     Path file = outputDir.resolve(
         project.getBasePackage().replace(".", "/")
             + "/application/port/out/"
-            + project.getEntity().getName()
+            + entityName
             + "RepositoryPort.java"
     );
     
-    FileWriterService.write(file, content);
+    FileWriterService.write(
+        file,
+        renderer.render("portout/RepositoryPort.jte", model)
+    );
   }
 }

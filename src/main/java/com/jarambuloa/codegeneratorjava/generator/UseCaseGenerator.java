@@ -1,5 +1,6 @@
 package com.jarambuloa.codegeneratorjava.generator;
 
+import com.jarambuloa.codegeneratorjava.model.EntityDefinition;
 import com.jarambuloa.codegeneratorjava.model.ProjectDefinition;
 import com.jarambuloa.codegeneratorjava.template.TemplateRenderer;
 import com.jarambuloa.codegeneratorjava.writer.FileWriterService;
@@ -16,41 +17,39 @@ public class UseCaseGenerator {
     this.renderer = renderer;
   }
   
-  public void generate(ProjectDefinition project, Path outputDir) throws IOException {
+  public void generate(
+      ProjectDefinition project,
+      String entityName,
+      EntityDefinition entity,
+      Path outputDir
+  ) throws IOException {
     
     var model = Map.of(
         "basePackage", project.getBasePackage(),
-        "entity", project.getEntity()
+        "entityName", entityName,
+        "entity", entity
     );
     
     // Port IN
-    String useCase = renderer.render(
-        "usecase/CreateUseCase.jte",
-        model
+    FileWriterService.write(
+        outputDir.resolve(
+            project.getBasePackage().replace(".", "/")
+                + "/application/port/in/Create"
+                + entityName
+                + "UseCase.java"
+        ),
+        renderer.render("usecase/CreateUseCase.jte", model)
     );
     
-    Path useCaseFile = outputDir.resolve(
-        project.getBasePackage().replace(".", "/")
-            + "/application/port/in/Create"
-            + project.getEntity().getName()
-            + "UseCase.java"
+    // Service
+    FileWriterService.write(
+        outputDir.resolve(
+            project.getBasePackage().replace(".", "/")
+                + "/application/service/Create"
+                + entityName
+                + "Service.java"
+        ),
+        renderer.render("usecase/CreateService.jte", model)
     );
-    
-    FileWriterService.write(useCaseFile, useCase);
-    
-    // Service implementation
-    String service = renderer.render(
-        "usecase/CreateService.jte",
-        model
-    );
-    
-    Path serviceFile = outputDir.resolve(
-        project.getBasePackage().replace(".", "/")
-            + "/application/service/Create"
-            + project.getEntity().getName()
-            + "Service.java"
-    );
-    
-    FileWriterService.write(serviceFile, service);
   }
 }
