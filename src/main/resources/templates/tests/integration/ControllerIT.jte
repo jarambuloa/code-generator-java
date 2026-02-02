@@ -1,9 +1,9 @@
 @param String basePackage
+@param String entityName
 @param com.jarambuloa.codegeneratorjava.model.EntityDefinition entity
 
 package ${basePackage}.adapters.in.rest;
 
-import ${basePackage}.adapters.in.rest.dto.Create${entity.getName()}Request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ${entity.getName()}ControllerIT {
+class ${entityName}ControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -26,12 +26,19 @@ class ${entity.getName()}ControllerIT {
     private ObjectMapper objectMapper;
 
     @Test
-    void should_create_${entity.getName().toLowerCase()}() throws Exception {
-        Create${entity.getName()}Request request = new Create${entity.getName()}Request();
+    void should_create_${entityName.toLowerCase()}() throws Exception {
 
-        mockMvc.perform(post("/${entity.getName().toLowerCase()}s")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+        var request = new Create${entityName}Request(
+@for (int i = 0; i < entity.getFields().size(); i++)
+            null${i < entity.getFields().size() - 1 ? "," : ""}
+@endfor
+        );
+
+        mockMvc.perform(
+                post("/${entityName.toLowerCase()}s")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        )
+        .andExpect(status().isCreated());
     }
 }

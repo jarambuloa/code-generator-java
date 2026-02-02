@@ -1,27 +1,28 @@
 @param String basePackage
+@param String entityName
 @param com.jarambuloa.codegeneratorjava.model.EntityDefinition entity
 
 package ${basePackage}.application.service;
 
-import ${basePackage}.application.port.in.Create${entity.getName()}UseCase;
-import ${basePackage}.application.port.out.${entity.getName()}RepositoryPort;
-import ${basePackage}.domain.model.${entity.getName()};
+import ${basePackage}.application.port.in.Create${entityName}UseCase;
+import ${basePackage}.application.port.out.${entityName}RepositoryPort;
+import ${basePackage}.domain.model.${entityName};
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class Create${entity.getName()}Service implements Create${entity.getName()}UseCase {
+public class Create${entityName}Service implements Create${entityName}UseCase {
 
-    private final ${entity.getName()}RepositoryPort repository;
+    private final ${entityName}RepositoryPort repository;
 
-    public Create${entity.getName()}Service(${entity.getName()}RepositoryPort repository) {
+    public Create${entityName}Service(${entityName}RepositoryPort repository) {
         this.repository = repository;
     }
 
     @Override
-    public ${entity.getName()} create(${entity.getName()} ${entity.getName().toLowerCase()}) {
-        return repository.save(${entity.getName().toLowerCase()});
+    public ${entityName} create(${entityName.toLowerCase()}) {
+        return repository.save(${entityName.toLowerCase()});
     }
 }

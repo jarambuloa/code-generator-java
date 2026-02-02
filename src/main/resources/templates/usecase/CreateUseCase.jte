@@ -1,11 +1,12 @@
 @param String basePackage
+@param String entityName
 @param com.jarambuloa.codegeneratorjava.model.EntityDefinition entity
 
 package ${basePackage}.application.port.in;
 
-import ${basePackage}.domain.model.${entity.getName()};
+import ${basePackage}.domain.model.${entityName};
 
-public interface Create${entity.getName()}UseCase {
+public interface Create${entityName}UseCase {
 
-    ${entity.getName()} create(${entity.getName()} ${entity.getName().toLowerCase()});
+    ${entityName} create(${entityName.toLowerCase()});
 }
