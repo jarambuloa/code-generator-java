@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: Usuarios API
+  version: 1.0.0
+
+paths:
+  /usuarios:
+    post:
+      operationId: createUsuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUsuarioRequest'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+
+components:
+  schemas:
+    CreateUsuarioRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+      required: [username, email]
+
+    Usuario:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string

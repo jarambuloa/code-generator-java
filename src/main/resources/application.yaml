@@ -1,0 +1,28 @@
+basePackage: com.empresa.usuarios
+serviceName: usuarios-service
+
+entities:
+  Usuario:
+    table: usuarios
+    idType: Long
+    fields:
+      - name: username
+        type: String
+      - name: email
+        type: String
+
+  Rol:
+    table: roles
+    idType: Long
+    fields:
+      - name: nombre
+        type: String
+
+  Permiso:
+    table: permisos
+    idType: Long
+    fields:
+      - name: codigo
+        type: String
+      - name: descripcion
+        type: String

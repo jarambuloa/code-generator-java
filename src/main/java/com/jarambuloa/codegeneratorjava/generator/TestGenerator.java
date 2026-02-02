@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
-public class AdapterInGenerator {
+public class TestGenerator {
   
   private final TemplateRenderer renderer;
   
-  public AdapterInGenerator(TemplateRenderer renderer) {
+  public TestGenerator(TemplateRenderer renderer) {
     this.renderer = renderer;
   }
   
@@ -23,21 +23,24 @@ public class AdapterInGenerator {
         "entity", project.getEntity()
     );
     
-    String basePath = project.getBasePackage().replace(".", "/")
-        + "/adapters/in/rest/";
+    String testBase = project.getBasePackage().replace(".", "/");
     
-    // DTO
+    // Unit test
     FileWriterService.write(
-        outputDir.resolve(basePath + "dto/Create"
-            + project.getEntity().getName() + "Request.java"),
-        renderer.render("adapterin/CreateRequest.jte", model)
+        outputDir.resolve(
+            "src/test/java/" + testBase + "/application/service/Create"
+                + project.getEntity().getName() + "ServiceTest.java"
+        ),
+        renderer.render("tests/unit/CreateServiceTest.jte", model)
     );
     
-    // Controller
+    // Integration test
     FileWriterService.write(
-        outputDir.resolve(basePath
-            + project.getEntity().getName() + "Controller.java"),
-        renderer.render("adapterin/Controller.jte", model)
+        outputDir.resolve(
+            "src/test/java/" + testBase + "/adapters/in/rest/"
+                + project.getEntity().getName() + "ControllerIT.java"
+        ),
+        renderer.render("tests/integration/ControllerIT.jte", model)
     );
   }
 }

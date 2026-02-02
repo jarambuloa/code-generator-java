@@ -1,0 +1,63 @@
+openapi: 3.0.3
+info:
+  title: Usuarios API
+  version: 1.0.0
+
+paths:
+  /usuarios:
+    post:
+      operationId: createUsuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUsuarioRequest'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+
+  /roles:
+    post:
+      operationId: createRol
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRolRequest'
+      responses:
+        '201':
+          description: Rol creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rol'
+
+components:
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        username: { type: string }
+        email: { type: string }
+
+    CreateUsuarioRequest:
+      type: object
+      required: [username, email]
+      properties:
+        username: { type: string }
+        email: { type: string }
+
+    Rol:
+      type: object
+      properties:
+        nombre: { type: string }
+
+    CreateRolRequest:
+      type: object
+      required: [nombre]
+      properties:
+        nombre: { type: string }

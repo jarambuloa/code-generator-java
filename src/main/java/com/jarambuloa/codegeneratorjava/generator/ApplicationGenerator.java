@@ -1,6 +1,7 @@
 package com.jarambuloa.codegeneratorjava.generator;
 
 import com.jarambuloa.codegeneratorjava.loader.YamlLoader;
+import com.jarambuloa.codegeneratorjava.model.EntityDefinition;
 import com.jarambuloa.codegeneratorjava.model.ProjectDefinition;
 import com.jarambuloa.codegeneratorjava.template.TemplateRenderer;
 
@@ -17,18 +18,40 @@ public class ApplicationGenerator {
     
     System.out.println("RESOURCE = " + url);
     
-    
     Path input = Paths.get("src/main/resources/input/entity.yaml");
-    //Path templates = Paths.get("src/main/resources/templates");
     Path output = Paths.get("generated-src");
     
     ProjectDefinition project = YamlLoader.load(input);
     
-    //TemplateRenderer renderer = new TemplateRenderer(templates);
     TemplateRenderer renderer = new TemplateRenderer();
-    DomainGenerator domainGenerator = new DomainGenerator(renderer);
+    /*
+    // 1️⃣ Domain
+    new DomainGenerator(renderer).generate(project, output);
     
-    domainGenerator.generate(project, output);
+    // 2️⃣ Port OUT
+    new PortOutGenerator(renderer).generate(project, output);
+    
+    new UseCaseGenerator(renderer).generate(project, output);
+    
+    new AdapterOutGenerator(renderer).generate(project, output);
+    
+    new AdapterInGenerator(renderer).generate(project, output);
+    
+    new TestGenerator(renderer).generate(project, output);
+    */
+    
+    for (var entry : project.getEntities().entrySet()) {
+      String entityName = entry.getKey();
+      EntityDefinition entity = entry.getValue();
+      
+      domainGenerator.generate(project, entityName, entity, output);
+      portOutGenerator.generate(project, entityName, entity, output);
+      useCaseGenerator.generate(project, entityName, entity, output);
+      adapterOutGenerator.generate(project, entityName, entity, output);
+      adapterInGenerator.generate(project, entityName, entity, output);
+      testGenerator.generate(project, entityName, entity, output);
+    }
+    
     
     System.out.println("✔ Código generado correctamente");
   }
