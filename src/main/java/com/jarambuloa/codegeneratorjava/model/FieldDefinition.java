@@ -2,7 +2,10 @@ package com.jarambuloa.codegeneratorjava.model;
 
 public class FieldDefinition {
   
+  @NotBlank(message = "El nombre del field es obligatorio")
   private String name;
+  
+  @NotBlank(message = "El tipo del field es obligatorio")
   private String type;
   
   public String getName() {

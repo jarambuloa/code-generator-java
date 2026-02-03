@@ -5,8 +5,15 @@ import java.util.List;
 public class EntityDefinition {
   
   private String name;
+  
+  @NotBlank(message = "table es obligatorio")
   private String table;
+  
+  @NotBlank(message = "idType es obligatorio")
   private String idType;
+  
+  @NotEmpty(message = "La entidad debe tener al menos un field")
+  @Valid
   private List<FieldDefinition> fields;
   
   public String getName() {

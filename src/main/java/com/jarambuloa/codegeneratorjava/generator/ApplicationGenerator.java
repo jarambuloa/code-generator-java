@@ -4,6 +4,7 @@ import com.jarambuloa.codegeneratorjava.loader.YamlLoader;
 import com.jarambuloa.codegeneratorjava.model.EntityDefinition;
 import com.jarambuloa.codegeneratorjava.model.ProjectDefinition;
 import com.jarambuloa.codegeneratorjava.template.TemplateRenderer;
+import com.jarambuloa.codegeneratorjava.validation.DslValidator;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +23,9 @@ public class ApplicationGenerator {
     Path output = Paths.get("generated-src");
     
     ProjectDefinition project = YamlLoader.load(input);
+    
+    // 🔥 VALIDACIÓN DEL DSL
+    DslValidator.validate(project);
     
     TemplateRenderer renderer = new TemplateRenderer();
     
