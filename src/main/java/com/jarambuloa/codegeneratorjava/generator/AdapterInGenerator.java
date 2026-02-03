@@ -39,6 +39,16 @@ public class AdapterInGenerator {
     );
     
     FileWriterService.write(
+        outputDir.resolve(
+            project.getBasePackage().replace(".", "/")
+                + "/adapters/in/rest/api/"
+                + entityName + "Api.java"
+        ),
+        renderer.render("openapi/ApiInterface.jte", model)
+    );
+    
+    
+    FileWriterService.write(
         outputDir.resolve(basePath + entityName + "Controller.java"),
         renderer.render("adapterin/Controller.jte", model)
     );

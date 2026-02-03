@@ -1,5 +1,7 @@
 basePackage: com.empresa.usuarios
 serviceName: usuarios-service
+api:
+  basePath: /api/v1
 
 entities:
   Usuario:
@@ -8,8 +10,10 @@ entities:
     fields:
       - name: username
         type: String
+        required: true
       - name: email
         type: String
+        required: true
 
   Rol:
     table: roles

@@ -9,11 +9,10 @@ import ${basePackage}.adapters.in.rest.dto.Create${entityName}Request;
 import ${basePackage}.domain.model.${entityName};
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/${entityName.toLowerCase()}s")
-public class ${entityName}Controller {
+public class ${entityName}Controller implements ${entityName}Api {
 
     private final Create${entityName}UseCase createUseCase;
 
