@@ -1,5 +1,7 @@
 package com.jarambuloa.codegeneratorjava.model;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class FieldDefinition {
   
   @NotBlank(message = "El nombre del field es obligatorio")
