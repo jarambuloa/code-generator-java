@@ -24,7 +24,7 @@ public class OpenApiGenerator {
     );
     
     FileWriterService.write(
-        outputDir.resolve("openapi.yaml"),
+        outputDir.resolve("generated/openapi.yaml"),
         renderer.render("openapi/openapi.jte", model)
     );
   }

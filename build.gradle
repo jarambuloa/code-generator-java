@@ -3,7 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '4.0.2'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'application'
-	id "org.openapi.generator" version "7.2.0"
+	//id "org.openapi.generator" version "7.5.0"
 }
 
 group = 'com.jarambulo'
@@ -18,6 +18,10 @@ java {
 
 repositories {
 	mavenCentral()
+}
+
+configurations {
+	generatorRuntime
 }
 
 dependencies {
@@ -45,24 +49,51 @@ application {
 	mainClass = 'com.jarambuloa.codegeneratorjava.generator.ApplicationGenerator'
 }
 
+/*
 openApiGenerate {
 	generatorName = "spring"
-	inputSpec = "$rootDir/src/main/resources/openapi/usuarios.yaml"
+	inputSpec = "$buildDir/generated/openapi.yaml"
 	outputDir = "$buildDir/generated/openapi"
+
 	apiPackage = "com.empresa.usuarios.adapters.in.rest.api"
 	modelPackage = "com.empresa.usuarios.adapters.in.rest.dto"
+
 	configOptions = [
-			interfaceOnly: "true",
-			useSpringBoot3: "true",
-			useTags: "true",
-			dateLibrary: "java17"
+			interfaceOnly   : "true",
+			useSpringBoot3  : "true",
+			useTags         : "true",
+			dateLibrary     : "java17"
 	]
 }
+*/
 
-sourceSets {
-	main {
-		java {
-			srcDir "$buildDir/generated/openapi/src/main/java"
-		}
-	}
+/*
+tasks.register("generateTsSdk", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = "typescript-fetch"
+	inputSpec = "$buildDir/generated/openapi.yaml"
+	outputDir = "$buildDir/sdk/typescript"
 }
+*/
+
+
+tasks.register("generateOpenApiSpec", JavaExec) {
+	group = "code generation"
+	description = "Genera openapi.yaml desde el DSL"
+
+	// 👇 usa SOLO el jar del proyecto, no compileJava
+	classpath = files(tasks.named("jar"))
+
+	mainClass = "com.jarambuloa.codegeneratorjava.generator.ApplicationGenerator"
+
+	outputs.file("$buildDir/generated/openapi.yaml")
+}
+
+/*
+tasks.named("openApiGenerate") {
+	dependsOn(tasks.named("generateOpenApiSpec"))
+}
+
+tasks.named("compileJava") {
+	dependsOn(tasks.named("openApiGenerate"))
+}
+ */
