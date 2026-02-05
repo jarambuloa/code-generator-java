@@ -20,35 +20,44 @@ public class EntityDefinition {
   @Valid
   private List<FieldDefinition> fields;
   
+  // 🔹 GETTERS
   public String getName() {
     return name;
-  }
-  
-  public void setName(String name) {
-    this.name = name;
   }
   
   public String getTable() {
     return table;
   }
   
-  public void setTable(String table) {
-    this.table = table;
-  }
-  
   public String getIdType() {
     return idType;
-  }
-  
-  public void setIdType(String idType) {
-    this.idType = idType;
   }
   
   public List<FieldDefinition> getFields() {
     return fields;
   }
   
+  // 🔹 SETTERS (🔥 OBLIGATORIOS PARA YAML)
+  public void setName(String name) {
+    this.name = name;
+  }
+  
+  public void setTable(String table) {
+    this.table = table;
+  }
+  
+  public void setIdType(String idType) {
+    this.idType = idType;
+  }
+  
   public void setFields(List<FieldDefinition> fields) {
     this.fields = fields;
+  }
+  
+  // 🔹 LÓGICA DE DOMINIO
+  public List<FieldDefinition> getRequiredFields() {
+    return fields.stream()
+        .filter(FieldDefinition::isRequired)
+        .toList();
   }
 }

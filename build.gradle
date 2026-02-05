@@ -3,7 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '4.0.2'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'application'
-	//id "org.openapi.generator" version "7.5.0"
+	id "org.openapi.generator" version "7.5.0"
 }
 
 group = 'com.jarambulo'
@@ -49,7 +49,26 @@ application {
 	mainClass = 'com.jarambuloa.codegeneratorjava.generator.ApplicationGenerator'
 }
 
-/*
+/* =========================================================
+   TASK 1 — Generar openapi.yaml (AISLADO)
+   ========================================================= */
+tasks.register("generateOpenApiSpec", JavaExec) {
+	group = "code generation"
+	description = "Genera openapi.yaml desde el DSL"
+
+	mainClass = "com.jarambuloa.codegeneratorjava.generator.ApplicationGenerator"
+	classpath = sourceSets.main.runtimeClasspath
+	workingDir = projectDir
+
+	inputs.dir("src/main/java")
+	inputs.dir("src/main/resources")
+	outputs.file(layout.buildDirectory.file("generated/openapi.yaml"))
+}
+
+
+/* =========================================================
+   EXTENSIÓN OpenAPI Generator (SOLO CONFIG)
+   ========================================================= */
 openApiGenerate {
 	generatorName = "spring"
 	inputSpec = "$buildDir/generated/openapi.yaml"
@@ -59,41 +78,23 @@ openApiGenerate {
 	modelPackage = "com.empresa.usuarios.adapters.in.rest.dto"
 
 	configOptions = [
-			interfaceOnly   : "true",
-			useSpringBoot3  : "true",
-			useTags         : "true",
-			dateLibrary     : "java17"
+			interfaceOnly  : "true",
+			useSpringBoot3 : "true",
+			useTags        : "true",
+			dateLibrary    : "java17"
 	]
 }
-*/
 
-/*
-tasks.register("generateTsSdk", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-	generatorName = "typescript-fetch"
-	inputSpec = "$buildDir/generated/openapi.yaml"
-	outputDir = "$buildDir/sdk/typescript"
+/* =========================================================
+   TASK 2 — Orquestador (SIN CICLOS)
+   ========================================================= */
+tasks.register("buildWithOpenApi") {
+	group = "build"
+	description = "Genera OpenAPI, interfaces y compila"
+
+	dependsOn(
+			"generateOpenApiSpec",
+			"openApiGenerate",
+			"compileJava"
+	)
 }
-*/
-
-
-tasks.register("generateOpenApiSpec", JavaExec) {
-	group = "code generation"
-	description = "Genera openapi.yaml desde el DSL"
-
-	// 👇 usa SOLO el jar del proyecto, no compileJava
-	classpath = files(tasks.named("jar"))
-
-	mainClass = "com.jarambuloa.codegeneratorjava.generator.ApplicationGenerator"
-
-	outputs.file("$buildDir/generated/openapi.yaml")
-}
-
-/*
-tasks.named("openApiGenerate") {
-	dependsOn(tasks.named("generateOpenApiSpec"))
-}
-
-tasks.named("compileJava") {
-	dependsOn(tasks.named("openApiGenerate"))
-}
- */

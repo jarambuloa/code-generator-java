@@ -1,3 +1,5 @@
+@param com.jarambuloa.codegeneratorjava.model.ProjectDefinition project
+
 openapi: 3.0.3
 info:
   title: ${project.getServiceName()}
@@ -5,55 +7,46 @@ info:
 
 paths:
 @for (var entry : project.getEntities().entrySet())
-@{
-    var entityName = entry.getKey();
-    var entity = entry.getValue();
-}
-  /${entityName.toLowerCase()}s:
+  /${entry.getKey().toLowerCase()}s:
     post:
-      summary: Create ${entityName}
-      operationId: create${entityName}
+      summary: Create ${entry.getKey()}
+      operationId: create${entry.getKey()}
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Create${entityName}Request'
+              $ref: '#/components/schemas/Create${entry.getKey()}Request'
       responses:
         '201':
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/${entityName}'
+                $ref: '#/components/schemas/${entry.getKey()}'
 @endfor
 
 components:
   schemas:
 @for (var entry : project.getEntities().entrySet())
-@{
-    var entityName = entry.getKey();
-    var entity = entry.getValue();
-}
-    ${entityName}:
+    ${entry.getKey()}:
       type: object
       properties:
-@for (var f : entity.getFields())
+@for (var f : entry.getValue().getFields())
         ${f.getName()}:
           type: string
-@if (f.isRequired())
+@endfor
+@if (!entry.getValue().getRequiredFields().isEmpty())
       required:
-@for (var f : entity.getFields())
-@if (f.isRequired())
+@for (var f : entry.getValue().getRequiredFields())
         - ${f.getName()}
+@endfor
 @endif
-@endfor
-@endfor
 
-    Create${entityName}Request:
+    Create${entry.getKey()}Request:
       type: object
       properties:
-@for (var f : entity.getFields())
+@for (var f : entry.getValue().getFields())
         ${f.getName()}:
           type: string
 @endfor

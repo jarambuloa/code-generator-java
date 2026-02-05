@@ -14,13 +14,22 @@ public class ApplicationGenerator {
   public static void main(String[] args) throws Exception {
     
     Path input = Paths.get("src/main/resources/input/entity.yaml");
-    Path output = Paths.get("build/generated");
+    Path output = Paths.get("build");
     
     // 1️⃣ Cargar DSL
     ProjectDefinition project = YamlLoader.load(input);
     
     // 2️⃣ Validar DSL
     DslValidator.validate(project);
+    
+    // 🔧 Normalizar entidades: inyectar name desde la key
+    project.getEntities().forEach((key, entity) -> {
+      if (entity.getName() == null || entity.getName().isBlank()) {
+        entity.setName(key);
+      }
+    });
+    
+    
     
     // 3️⃣ Infra común
     TemplateRenderer renderer = new TemplateRenderer();
@@ -47,6 +56,11 @@ public class ApplicationGenerator {
       adapterInGenerator.generate(project, entityName, entity, output);
       testGenerator.generate(project, entityName, entity, output);
     }
+    
+    project.getEntities().forEach((k, v) -> {
+      System.out.println("KEY = " + k);
+      System.out.println("ENTITY.NAME = " + v.getName());
+    });
     
     // 🔥 6️⃣ OPENAPI (UNA VEZ POR PROYECTO)
     openApiGenerator.generate(project, output);
